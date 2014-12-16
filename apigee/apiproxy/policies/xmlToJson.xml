@@ -1,0 +1,18 @@
+<XMLToJSON name="xmlToJson">
+	<OutputVariable>jsonResponse</OutputVariable>
+	<Options>
+	    <RecognizeBoolean>true</RecognizeBoolean>
+	    <RecognizeNumber>true</RecognizeNumber>
+	    <RecognizeNull>true</RecognizeNull>
+	    <NullValue></NullValue>
+	    <NamespaceBlockName>#namespaces</NamespaceBlockName>
+	    <DefaultNamespaceNodeName>$default</DefaultNamespaceNodeName>
+	    <NamespaceSeparator>_</NamespaceSeparator>
+	    <TextAlwaysAsProperty>false</TextAlwaysAsProperty>
+	    <TextNodeName>#text</TextNodeName>
+	    <AttributeBlockName>#attrs</AttributeBlockName>
+	    <AttributePrefix>@</AttributePrefix>
+	    <OutputPrefix></OutputPrefix>
+	    <OutputSuffix></OutputSuffix>
+	</Options>
+</XMLToJSON>

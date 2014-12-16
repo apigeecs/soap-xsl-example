@@ -1,0 +1,17 @@
+<AssignMessage name="buildGetHolidaysListRequest">
+	<AssignTo type="request" transport="http" createNew="true">request</AssignTo>
+	<IgnoreUnresolvedVariables>true</IgnoreUnresolvedVariables>
+	<Set>
+		<Headers>
+			<Header name="Content-Type">application/soap+xml</Header>
+		</Headers>
+	    <Payload><soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
+  <soap12:Body>
+    <GetHolidaysAvailable xmlns="http://www.holidaywebservice.com/HolidayService_v2/">
+      <countryCode>{countryCode}</countryCode>
+    </GetHolidaysAvailable>
+  </soap12:Body>
+</soap12:Envelope></Payload>
+	    <Verb>POST</Verb>
+	</Set>
+</AssignMessage>

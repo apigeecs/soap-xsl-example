@@ -1,0 +1,16 @@
+<ExtractVariables name="extractInputFields">
+    <JSONPayload>
+        <Variable name="year">
+            <JSONPath>$.year</JSONPath>
+        </Variable>
+        <Variable name="month">
+            <JSONPath>$.month</JSONPath>
+        </Variable>
+    </JSONPayload>
+    <URIPath>
+    	<Pattern ignoreCase="true">/countries/{countryCode}/holidays/{holidayCode}</Pattern>
+    	<Pattern ignoreCase="true">/countries/{countryCode}/holidays</Pattern>
+    	<Pattern ignoreCase="true">/countries/{countryCode}</Pattern>
+    </URIPath>
+    <IgnoreUnresolvedVariables>true</IgnoreUnresolvedVariables>
+</ExtractVariables>

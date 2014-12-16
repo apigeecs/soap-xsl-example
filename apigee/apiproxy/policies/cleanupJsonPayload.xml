@@ -1,0 +1,3 @@
+<Javascript continueOnError="false" async="false" name="cleanupJsonPayload">
+    <ResourceURL>jsc://cleanupJsonPayload.js</ResourceURL>
+</Javascript>

@@ -1,0 +1,3 @@
+[submodule "apigee-common"]
+	path = apigee-common
+	url = git@github.com:apigeecs/apigee-common.git

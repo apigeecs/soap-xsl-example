@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ProxyEndpoint name="default">
+
+    <PreFlow>
+        <Request>
+        	<Step>
+				<Name>setCommonVariables</Name>
+			</Step>
+			<!--
+        	<Step>
+				<Name>verifyAccessToken</Name>
+			</Step>
+        	<Step>
+				<Name>stripAuthHeader</Name>
+			</Step>
+			-->
+
+			<!-- CORS -->
+			<Step>
+				<Name>fetchAllowedOriginsFromMap</Name>
+				<Condition>origin != "NA"</Condition>
+			</Step>
+			<Step>
+				<Name>checkAllowedCORSOrigins</Name>
+				<Condition>(requestVerb == "OPTIONS" || origin != "NA")</Condition>
+			</Step>
+			<!-- CORS -->
+
+			<Step>
+				<Name>extractInputFields</Name>
+			</Step>
+
+        </Request>
+        <Response/>
+    </PreFlow>
+
+    <Flows>
+
+	    <!-- add regular flows here, evaluated top to bottom -->
+
+	    <!-- GET /countries -->
+	    <Flow name="getCountries">
+	    	<Condition>(requestVerb == "GET") AND (proxy.pathsuffix MatchesPath "/countries")</Condition>
+            <Request>
+            	<Step>
+            		<Name>buildGetCountriesRequest</Name>
+            	</Step>
+            </Request>
+            <Response>
+            	<Step>
+            		<Name>xslGetCountriesResponse</Name>
+            	</Step>
+            </Response>
+	    </Flow>
+
+	    <!-- POST /countries/{countryCode}/holidays, payload: {"year": 2015, "month": 1} -->
+	    <Flow name="getHolidaysForMonth">
+	    	<Condition>(requestVerb == "POST") AND (proxy.pathsuffix MatchesPath "/countries/{countryCode}/holidays") AND (year != null) AND (month != null)</Condition>
+            <Request>
+            	<Step>
+            		<Name>buildGetHolidaysForMonthRequest</Name>
+            	</Step>
+            </Request>
+            <Response>
+            	<Step>
+            		<Name>xslGetHolidaysForMonthResponse</Name>
+            	</Step>
+            </Response>
+	    </Flow>
+
+	    <!-- POST /countries/{countryCode}/holidays, payload: {"year": 2015} -->
+	    <Flow name="getHolidaysForYear">
+	    	<Condition>(requestVerb == "POST") AND (proxy.pathsuffix MatchesPath "/countries/{countryCode}/holidays") AND (year != null)</Condition>
+            <Request>
+            	<Step>
+            		<Name>buildGetHolidaysForYearRequest</Name>
+            	</Step>
+            </Request>
+            <Response>
+            	<Step>
+            		<Name>xslGetHolidaysForYearResponse</Name>
+            	</Step>
+            </Response>
+	    </Flow>
+
+	    <!-- GET /countries/{countryCode}/holidays -->
+	    <Flow name="getHolidaysList">
+	    	<Condition>(requestVerb == "GET") AND (proxy.pathsuffix MatchesPath "/countries/{countryCode}/holidays")</Condition>
+            <Request>
+            	<Step>
+            		<Name>buildGetHolidaysListRequest</Name>
+            	</Step>
+            </Request>
+            <Response>
+            	<Step>
+            		<Name>xslGetHolidaysListResponse</Name>
+            	</Step>
+            </Response>
+	    </Flow>
+
+	    <!-- POST /countries/{countryCode}/holidays/{holidayCode}, payload: {"year": 2015} -->
+	    <Flow name="getHolidayDate">
+	    	<Condition>(requestVerb == "POST") AND (proxy.pathsuffix MatchesPath "/countries/{countryCode}/holidays/{holidayCode}") AND (year != null)</Condition>
+            <Request>
+            	<Step>
+            		<Name>buildGetHolidayDateRequest</Name>
+            	</Step>
+            </Request>
+            <Response>
+            	<Step>
+            		<Name>xslGetHolidayDateResponse</Name>
+            	</Step>
+            </Response>
+	    </Flow>
+
+		<!-- CORS -->
+    	<Flow name="corsPreflight">
+            <Condition>requestVerb == "OPTIONS"</Condition>
+            <Request/>
+            <Response>
+                <Step>
+					<Name>createCORSFailedPreflightResponse</Name>
+					<Condition>corsResult == "invalidInput"</Condition>
+				</Step>
+				<Step>
+					<Name>createCORSInvalidOriginPreflightResponse</Name>
+					<Condition>corsResult == "originNotAllowed"</Condition>
+				</Step>
+				<Step>
+					<Name>createCORSPreflightResponse</Name>
+					<Condition>corsResult == "originAllowed"</Condition>
+				</Step>
+				<Step>
+					<Name>addCORSPreflightHeaders</Name>
+					<Condition>corsResult == "originAllowed"</Condition>
+				</Step>
+            </Response>
+        </Flow>
+		<!-- CORS -->
+
+		<!-- if no match found, return 404 -->
+	    <Flow name="NotFound">
+            <Request>
+            	<Step>
+            		<Name>Fault.NotFound</Name>
+            	</Step>
+            </Request>
+            <Response/>
+	    </Flow>
+
+    </Flows>
+
+    <PostFlow>
+		<Request/>
+		<Response>
+
+			<!-- change content type to application/xml -->
+			<Step>
+				<Name>resetContentType</Name>
+			</Step>
+			<!-- convert XML to JSON -->
+			<Step>
+				<Name>xmlToJson</Name>
+			</Step>
+			<!-- fix JSON payload -->
+			<Step>
+				<Name>cleanupJsonPayload</Name>
+			</Step>
+
+			<!-- CORS -->
+			<Step>
+				<Name>addCORSAllowOriginHeader</Name>
+				<Condition>(corsResult == "originAllowed") and (requestVerb != "OPTIONS") and (origin != "NA")</Condition>
+			</Step>
+			<!-- CORS -->
+
+		</Response>
+	</PostFlow>
+
+    <!-- Generic Fault Rules defined below.  All fault responses are pulled from commonResources -->
+    <FaultRules>
+		<FaultRule name="faultRules">
+
+			<!-- CORS -->
+			<Step>
+				<Name>addCORSAllowOriginHeader</Name>
+				<Condition>(corsResult == "originAllowed") and (requestVerb != "OPTIONS") and (origin != "NA")</Condition>
+			</Step>
+			<!-- CORS -->
+
+		</FaultRule>
+    </FaultRules>
+
+    <HTTPProxyConnection>
+        <BasePath>/v1/soap-xsl-example</BasePath>
+        <Properties/>
+        <VirtualHost>default</VirtualHost>
+        <VirtualHost>secure</VirtualHost>
+    </HTTPProxyConnection>
+
+    <!-- Null route to support CORS preflight -->
+	<RouteRule name="nullTarget">
+        <Condition>requestVerb == "OPTIONS"</Condition>
+    </RouteRule>
+    <RouteRule name="default">
+        <TargetEndpoint>default</TargetEndpoint>
+    </RouteRule>
+</ProxyEndpoint>

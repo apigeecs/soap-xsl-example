@@ -1,0 +1,3 @@
+<Javascript enabled="true" continueOnError="false" async="false" name="removePathSuffix">
+    <ResourceURL>jsc://removePathSuffix.js</ResourceURL>
+</Javascript>

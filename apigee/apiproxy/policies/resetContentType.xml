@@ -1,0 +1,7 @@
+<AssignMessage name="resetContentType">
+	<Set>
+		<Headers>
+			<Header name="Content-Type">application/xml</Header>
+		</Headers>
+	</Set>
+</AssignMessage>

@@ -1,0 +1,3 @@
+<XSL name="xslGetHolidaysForMonthResponse">
+    <ResourceURL>xsl://getHolidaysForMonthResponse.xsl</ResourceURL>
+</XSL>

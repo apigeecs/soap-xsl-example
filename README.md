@@ -5,6 +5,7 @@ Example proxy using XSL for JSON to SOAP conversion. This repository uses git su
 
 ## Git Submodule
 To create the apigee-common submodule, follow these steps:
+
 1. apigee-common repository should be added at the same location as the code repository.
 2. In the API repo, "git submodule add git@github.com:<githubAccount>/apigee-common.git apigee-common/". This will update the .gitmodules file with the submodule information.
 3. Push the code to the API repo on github.

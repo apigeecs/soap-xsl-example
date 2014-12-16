@@ -14,3 +14,6 @@ To create the apigee-common submodule, follow these steps:
 
 ## SOAP Service
 This API uses the Holiday Web Service SOAP API (http://www.holidaywebservice.com/HolidayService_v2/HolidayService2.asmx?wsdl).
+
+## Organization
+The organization in this repo is set to "myorg". Change "myorg" to your organization name.

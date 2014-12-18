@@ -1,4 +1,4 @@
-<xsl:stylesheet version="1.0"
+<xsl:stylesheet version="2.0"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:soap="http://www.w3.org/2003/05/soap-envelope"
     xmlns:hs="http://www.holidaywebservice.com/HolidayService_v2/"
@@ -6,8 +6,10 @@
     <xsl:output method="xml" indent="yes"/>
 
     <xsl:template match="/soap:Envelope/soap:Body/hs:GetHolidayDateResponse/hs:GetHolidayDateResult">
+    	<xsl:variable name="holidayDate" select="."/>
         <ROOT>
-        	<date><xsl:value-of select="."/></date>
+			<date><xsl:value-of select="format-dateTime($holidayDate,'[Y0001]-[M01]-[D01]')"/></date>
+			<dayOfWeek><xsl:value-of select="format-dateTime($holidayDate,'[F]')"/></dayOfWeek>
         </ROOT>
     </xsl:template>
 </xsl:stylesheet>

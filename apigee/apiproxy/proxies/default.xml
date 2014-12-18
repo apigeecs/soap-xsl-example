@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ProxyEndpoint name="default">
 
     <PreFlow>
@@ -6,7 +5,7 @@
         	<Step>
 				<Name>setCommonVariables</Name>
 			</Step>
-			<!--
+			<!-- auth, rate limiting, response caching, etc.
         	<Step>
 				<Name>verifyAccessToken</Name>
 			</Step>
@@ -16,13 +15,22 @@
 			-->
 
 			<!-- CORS -->
+			<!-- all Origin headers are validated, preflight and regular requests -->
 			<Step>
-				<Name>fetchAllowedOriginsFromMap</Name>
+				<Name>lookupAllowedOriginsFromCache</Name>
 				<Condition>origin != "NA"</Condition>
 			</Step>
 			<Step>
+				<Name>fetchAllowedOriginsFromMap</Name>
+				<Condition>(origin != "NA") AND (lookupcache.lookupAllowedOriginsFromCache.cachehit == false)</Condition>
+			</Step>
+			<Step>
+				<Name>populateAllowedOriginsInCache</Name>
+				<Condition>(origin != "NA") AND (lookupcache.lookupAllowedOriginsFromCache.cachehit == false)</Condition>
+			</Step>
+			<Step>
 				<Name>checkAllowedCORSOrigins</Name>
-				<Condition>(requestVerb == "OPTIONS" || origin != "NA")</Condition>
+				<Condition>(requestVerb == "OPTIONS") OR (origin != "NA")</Condition>
 			</Step>
 			<!-- CORS -->
 
@@ -53,36 +61,6 @@
             </Response>
 	    </Flow>
 
-	    <!-- POST /countries/{countryCode}/holidays, payload: {"year": 2015, "month": 1} -->
-	    <Flow name="getHolidaysForMonth">
-	    	<Condition>(requestVerb == "POST") AND (proxy.pathsuffix MatchesPath "/countries/{countryCode}/holidays") AND (year != null) AND (month != null)</Condition>
-            <Request>
-            	<Step>
-            		<Name>buildGetHolidaysForMonthRequest</Name>
-            	</Step>
-            </Request>
-            <Response>
-            	<Step>
-            		<Name>xslGetHolidaysForMonthResponse</Name>
-            	</Step>
-            </Response>
-	    </Flow>
-
-	    <!-- POST /countries/{countryCode}/holidays, payload: {"year": 2015} -->
-	    <Flow name="getHolidaysForYear">
-	    	<Condition>(requestVerb == "POST") AND (proxy.pathsuffix MatchesPath "/countries/{countryCode}/holidays") AND (year != null)</Condition>
-            <Request>
-            	<Step>
-            		<Name>buildGetHolidaysForYearRequest</Name>
-            	</Step>
-            </Request>
-            <Response>
-            	<Step>
-            		<Name>xslGetHolidaysForYearResponse</Name>
-            	</Step>
-            </Response>
-	    </Flow>
-
 	    <!-- GET /countries/{countryCode}/holidays -->
 	    <Flow name="getHolidaysList">
 	    	<Condition>(requestVerb == "GET") AND (proxy.pathsuffix MatchesPath "/countries/{countryCode}/holidays")</Condition>
@@ -98,9 +76,54 @@
             </Response>
 	    </Flow>
 
+	    <!-- POST /countries/{countryCode}/holidays, payload: {"year": 2015, "month": 1} -->
+	    <Flow name="getHolidaysForMonth">
+	    	<Condition>(requestVerb == "POST") AND (proxy.pathsuffix MatchesPath "/countries/{countryCode}/holidays") AND (year != null) AND (month != null) AND (startDate == null) AND (endDate == null)</Condition>
+            <Request>
+            	<Step>
+            		<Name>buildGetHolidaysForMonthRequest</Name>
+            	</Step>
+            </Request>
+            <Response>
+            	<Step>
+            		<Name>xslGetHolidaysForMonthResponse</Name>
+            	</Step>
+            </Response>
+	    </Flow>
+
+	    <!-- POST /countries/{countryCode}/holidays, payload: {"year": 2015} -->
+	    <Flow name="getHolidaysForYear">
+	    	<Condition>(requestVerb == "POST") AND (proxy.pathsuffix MatchesPath "/countries/{countryCode}/holidays") AND (year != null) AND (startDate == null) AND (endDate == null)</Condition>
+            <Request>
+            	<Step>
+            		<Name>buildGetHolidaysForYearRequest</Name>
+            	</Step>
+            </Request>
+            <Response>
+            	<Step>
+            		<Name>xslGetHolidaysForYearResponse</Name>
+            	</Step>
+            </Response>
+	    </Flow>
+
+	    <!-- POST /countries/{countryCode}/holidays, payload: {"startDate": "2015-01-01", "endDate": "2015-03-01"} -->
+	    <Flow name="getHolidaysForDateRange">
+	    	<Condition>(requestVerb == "POST") AND (proxy.pathsuffix MatchesPath "/countries/{countryCode}/holidays") AND (startDate != null) AND (endDate != null) AND (year == null) AND (month == null)</Condition>
+            <Request>
+            	<Step>
+            		<Name>buildGetHolidaysForDateRangeRequest</Name>
+            	</Step>
+            </Request>
+            <Response>
+            	<Step>
+            		<Name>xslGetHolidaysForDateRangeResponse</Name>
+            	</Step>
+            </Response>
+	    </Flow>
+
 	    <!-- POST /countries/{countryCode}/holidays/{holidayCode}, payload: {"year": 2015} -->
 	    <Flow name="getHolidayDate">
-	    	<Condition>(requestVerb == "POST") AND (proxy.pathsuffix MatchesPath "/countries/{countryCode}/holidays/{holidayCode}") AND (year != null)</Condition>
+	    	<Condition>(requestVerb == "POST") AND (proxy.pathsuffix MatchesPath "/countries/{countryCode}/holidays/{holidayCode}") AND (year != null) AND (month == null) AND (startDate == null) AND (endDate == null)</Condition>
             <Request>
             	<Step>
             		<Name>buildGetHolidayDateRequest</Name>
@@ -154,9 +177,9 @@
 		<Request/>
 		<Response>
 
-			<!-- change content type to application/xml -->
+			<!-- change content type to application/xml for XMLToJSON and clear other headers -->
 			<Step>
-				<Name>resetContentType</Name>
+				<Name>setResponseHeaders</Name>
 			</Step>
 			<!-- convert XML to JSON -->
 			<Step>

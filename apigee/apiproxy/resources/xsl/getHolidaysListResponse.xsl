@@ -1,4 +1,4 @@
-<xsl:stylesheet version="1.0"
+<xsl:stylesheet version="2.0"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:soap="http://www.w3.org/2003/05/soap-envelope"
     xmlns:hs="http://www.holidaywebservice.com/HolidayService_v2/"
@@ -11,7 +11,7 @@
     		<TOPARRAY>~ARRAY~</TOPARRAY>
     		<xsl:for-each select="./hs:HolidayCode">
     		<TOPARRAY>
-    			<code><xsl:value-of select="./hs:Code"/></code>
+    			<code>~STR~<xsl:value-of select="./hs:Code"/></code>
     			<description><xsl:value-of select="./hs:Description"/></description>
     		</TOPARRAY>
     		</xsl:for-each>

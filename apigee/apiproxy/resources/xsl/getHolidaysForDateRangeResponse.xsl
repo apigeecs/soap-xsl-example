@@ -5,7 +5,7 @@
     exclude-result-prefixes="soap hs">
     <xsl:output method="xml" indent="yes"/>
 
-    <xsl:template match="/soap:Envelope/soap:Body/hs:GetHolidaysForYearResponse/hs:GetHolidaysForYearResult">
+    <xsl:template match="/soap:Envelope/soap:Body/hs:GetHolidaysForDateRangeResponse/hs:GetHolidaysForDateRangeResult">
         <ROOT>
     		<TOPARRAY>~ARRAY~</TOPARRAY>
     		<TOPARRAY>~ARRAY~</TOPARRAY>

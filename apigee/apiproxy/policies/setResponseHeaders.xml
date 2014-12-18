@@ -1,0 +1,11 @@
+<AssignMessage name="setResponseHeaders">
+	<!-- Remove all headers returned by the backend -->
+	<Remove>
+		<Headers/>
+	</Remove>
+	<Set>
+		<Headers>
+			<Header name="Content-Type">application/xml</Header>
+		</Headers>
+	</Set>
+</AssignMessage>

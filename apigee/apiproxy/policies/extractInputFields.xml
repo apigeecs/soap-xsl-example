@@ -6,6 +6,12 @@
         <Variable name="month">
             <JSONPath>$.month</JSONPath>
         </Variable>
+        <Variable name="startDate">
+            <JSONPath>$.startDate</JSONPath>
+        </Variable>
+        <Variable name="endDate">
+            <JSONPath>$.endDate</JSONPath>
+        </Variable>
     </JSONPayload>
     <URIPath>
     	<Pattern ignoreCase="true">/countries/{countryCode}/holidays/{holidayCode}</Pattern>

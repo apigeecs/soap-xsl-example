@@ -180,14 +180,17 @@
 			<!-- change content type to application/xml for XMLToJSON and clear other headers -->
 			<Step>
 				<Name>setResponseHeaders</Name>
+				<Condition>requestVerb != "OPTIONS"</Condition>
 			</Step>
 			<!-- convert XML to JSON -->
 			<Step>
 				<Name>xmlToJson</Name>
+				<Condition>requestVerb != "OPTIONS"</Condition>
 			</Step>
 			<!-- fix JSON payload -->
 			<Step>
 				<Name>cleanupJsonPayload</Name>
+				<Condition>requestVerb != "OPTIONS"</Condition>
 			</Step>
 
 			<!-- CORS -->

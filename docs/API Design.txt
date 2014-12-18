@@ -1,0 +1,16 @@
+RESTful Holiday API Design
+
+SOAP services:
+GetCountriesAvailable()                                   -> [country codes]
+GetHolidaysAvailable(countryCode)                         -> [holiday codes]
+GetHolidaysForYear(countryCode, year)                     -> [holidays]
+GetHolidaysForMonth(countryCode, year, month)             -> [holidays]
+GetHolidaysForDateRange(countryCode, startDate, endDate)  -> [holidays]
+GetHolidayDate(countryCode, holidayCode, year)            -> {holiday date}
+
+GET /countries
+GET /countries/{countryCode}/holidays
+POST /countries/{countryCode}/holidays    {"year": 2015}
+POST /countries/{countryCode}/holidays    {"year": 2015, "month": 11}
+POST /countries/{countryCode}/holidays    {"startDate": "2015-01-01", "endDate": "2015-01-01"}
+POST /countries/{countryCode}/holidays/{holidayCode}    {"year": 2015}
